@@ -1,10 +1,22 @@
+// Importa o módulo Express, que é um framework para criar servidores web em Node.js
 const express = require("express");
-const userRoute = require("./src/routes/user.route");
+// Cria uma instância do aplicativo Express
 const app = express();
 
-app.use("/soma", userRoute);
+// Importa as rotas relacionadas ao usuário, definidas em outro arquivo
+const userRoute = require("./src/routes/user.route");
 
-app.listen(3000);
+// Define a porta em que o servidor irá rodar
+const port = 3000;
+
+// Configura o Express para aceitar requisições com corpo em formato JSON
+app.use(express.json());
+
+// Usa as rotas de usuário para qualquer requisição que comece com "/user"
+app.use("/user", userRoute);
+
+// Inicia o servidor e exibe uma mensagem no console quando estiver rodando
+app.listen(port, () => console.log(`Servidor rodando na porta ${port}`));
 
 //*****ESTUDO*******
 //ROTA
