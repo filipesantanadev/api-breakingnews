@@ -2,12 +2,16 @@
 const express = require("express");
 // Cria uma instância do aplicativo Express
 const app = express();
+// Conecta ao banco de dados MongoDB usando a função definida em db.js
+const connectDatabase = require("./src/database/db");
 
 // Importa as rotas relacionadas ao usuário, definidas em outro arquivo
 const userRoute = require("./src/routes/user.route");
 
 // Define a porta em que o servidor irá rodar
 const port = 3000;
+
+connectDatabase(); // Chama a função para conectar ao banco de dados
 
 // Configura o Express para aceitar requisições com corpo em formato JSON
 app.use(express.json());
