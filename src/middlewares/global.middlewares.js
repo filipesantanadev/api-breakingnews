@@ -1,8 +1,8 @@
-const mongoose = require("mongoose");
-const userService = require("../services/user.service");
+import mongoose from "mongoose";
+import userService from "../services/user.service.js";
 
 // Middleware to validate if the ID is a valid MongoDB ObjectId
-const validId = (req, res, next) => {
+export const validId = (req, res, next) => {
   try {
     const id = req.params.id;
 
@@ -17,7 +17,7 @@ const validId = (req, res, next) => {
 };
 
 // Middleware to check if the user exists in the database
-const validUser = async (req, res, next) => {
+export const validUser = async (req, res, next) => {
   try {
     const id = req.params.id;
 
@@ -36,4 +36,4 @@ const validUser = async (req, res, next) => {
   }
 };
 
-module.exports = { validId, validUser };
+export default { validId, validUser };
