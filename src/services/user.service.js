@@ -4,7 +4,7 @@ const createService = (body) => User.create(body);
 
 const findAllService = () => User.find();
 
-const findByIdService = (id) => User.findById(id);
+const findByIdUserService = (id) => User.findById(id);
 
 const updateService = (
   id,
@@ -23,6 +23,6 @@ const updateService = (
 export default {
   createService,
   findAllService,
-  findByIdService,
+  findByIdUserService,
   updateService,
 };
