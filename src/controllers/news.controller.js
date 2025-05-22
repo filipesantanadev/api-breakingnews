@@ -6,6 +6,7 @@ import {
   findByIdService,
   searchByTitleService,
   byUserService,
+  updateService,
 } from "../services/news.service.js";
 
 const create = async (req, res) => {
@@ -25,7 +26,9 @@ const create = async (req, res) => {
       },
     });
 
-    res.send(201);
+    res.status(201).send({
+      message: "Post successfully created",
+    });
   } catch (err) {
     res.status(500).send({ message: err.message });
   }
@@ -196,4 +199,35 @@ const byUser = async (req, res) => {
   }
 };
 
-export { create, findAll, topNews, findById, searchByTitle, byUser };
+const update = async (req, res) => {
+  try {
+    const { title, text, banner } = req.body;
+    const { id } = req.params;
+
+    if (!title && !text && !banner) {
+      res
+        .status(400)
+        .send({ message: "Submit at least one field to update the post" });
+    }
+
+    const news = await findByIdService(id);
+
+    console.log(typeof news.user._id, typeof req.userId);
+
+    if (String(news.user._id) !== req.userId) {
+      return res
+        .status(400)
+        .send({ message: "You are not the owner of this post" });
+    }
+
+    await updateService(id, title, text, banner);
+
+    return res.send({
+      message: "Post successfully updated",
+    });
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+};
+
+export { create, findAll, topNews, findById, searchByTitle, byUser, update };
