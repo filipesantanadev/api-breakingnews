@@ -7,6 +7,9 @@ import {
   searchByTitleService,
   byUserService,
   updateService,
+  eraseService,
+  likeNewsService,
+  deleteLikeNewsService,
 } from "../services/news.service.js";
 
 const create = async (req, res) => {
@@ -207,17 +210,13 @@ const update = async (req, res) => {
     if (!title && !text && !banner) {
       res
         .status(400)
-        .send({ message: "Submit at least one field to update the post" });
+        .send({ message: "Submit at least one field to update the News" });
     }
 
     const news = await findByIdService(id);
 
-    console.log(typeof news.user._id, typeof req.userId);
-
     if (String(news.user._id) !== req.userId) {
-      return res
-        .status(400)
-        .send({ message: "You are not the owner of this post" });
+      return res.status(400).send({ message: "You didn't update this News" });
     }
 
     await updateService(id, title, text, banner);
@@ -230,4 +229,52 @@ const update = async (req, res) => {
   }
 };
 
-export { create, findAll, topNews, findById, searchByTitle, byUser, update };
+const erase = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const news = await findByIdService(id);
+
+    if (String(news.user._id) !== req.userId) {
+      return res.status(400).send({ message: "You didn't delete this News" });
+    }
+
+    await eraseService(id);
+
+    return res.send({
+      message: "News successfully deleted",
+    });
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+};
+
+const likeNews = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.userId;
+
+    const newsLiked = await likeNewsService(id, userId);
+
+    if (!newsLiked) {
+      await deleteLikeNewsService(id, userId);
+      return res.status(200).send({ message: "Like successfully removed" });
+    }
+
+    res.send({ message: "Like successfully added" });
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+};
+
+export {
+  create,
+  findAll,
+  topNews,
+  findById,
+  searchByTitle,
+  byUser,
+  update,
+  erase,
+  likeNews,
+};
