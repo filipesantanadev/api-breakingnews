@@ -19,24 +19,28 @@
     }
   ],
   "paths": {
-    "/user/": {
+    "/user/create": {
       "post": {
         "summary": "Create a new user",
-        "description": "Route responsible for creating a new user.",
-        "tags": ["User"],
+        "description": "Route responsible for creating a new user",
+        "tags": ["Users"],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/User"
               },
-              "example": {
-                "name": "Filipe Santana",
-                "username": "santanacode",
-                "email": "santanacode@gmail.com",
-                "password": "1234567",
-                "avatar": "https://avatars.githubusercontent.com/u/57456556?v=4",
-                "background": "https://i.imgur.com/Nt5EFS8.png"
+              "examples": {
+                "Users": {
+                  "value": {
+                    "name": "Max Code",
+                    "username": "maxcode",
+                    "email": "maxcode@gmail.com",
+                    "password": "1234567",
+                    "avatar": "https://avatars.githubusercontent.com/u/57456556?v=4",
+                    "background": "https://images.wallpapersden.com/image/download/triangle-8k-blue-pattern_bGZlbmiUmZqaraWkpJRmbmdlrWZlbWU.jpg"
+                  }
+                }
               }
             }
           }
@@ -49,7 +53,8 @@
             "description": "Created",
             "content": {
               "application/json": {
-                "schema": {
+                "schemma": {
+                  "type": "object",
                   "$ref": "#/components/schemas/User"
                 }
               }
@@ -87,7 +92,7 @@
         }
       }
     },
-    "/user/{id}/": {
+    "/user/findById/{id}": {
       "get": {
         "summary": "Search user by id",
         "description": "Route responsible for searching for user by id",
@@ -123,7 +128,7 @@
         }
       }
     },
-    "/user/{id}": {
+    "/user/update/{id}": {
       "patch": {
         "summary": "Update user by id",
         "description": "Route responsible for editing the user by id",
@@ -175,7 +180,7 @@
         }
       }
     },
-    "/auth/": {
+    "/auth/login": {
       "post": {
         "summary": "Login to Breaking News",
         "description": "Route responsible for logging in a registered user",
@@ -189,7 +194,7 @@
               "examples": {
                 "User": {
                   "value": {
-                    "email": "santanacode@gmail.com",
+                    "email": "maxcode@gmail.com",
                     "password": "1234567"
                   }
                 }
