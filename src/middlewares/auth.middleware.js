@@ -1,45 +1,32 @@
+import "dotenv/config";
 import jwt from "jsonwebtoken";
-import userService from "../services/user.service.js";
-import dotenv from "dotenv";
+import userRepositories from "../repositories/user.repositories.js";
 
-dotenv.config();
+function authMiddleware(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader)
+    return res.status(401).send({ message: "The token was not informed!" });
 
-export const authMiddleware = (req, res, next) => {
-  try {
-    const { authorization } = req.headers;
+  const parts = authHeader.split(" "); /* ["Bearer", "asdasdasdadsadasd"] */
+  if (parts.length !== 2)
+    return res.status(401).send({ message: "Invalid token!" });
 
-    if (!authorization) {
-      return res.send(401);
-    }
+  const [scheme, token] = parts;
 
-    const parts = authorization.split(" ");
+  if (!/^Bearer$/i.test(scheme))
+    return res.status(401).send({ message: "Malformatted Token!" });
 
-    if (parts.length !== 2) {
-      return res.send(401);
-    }
+  jwt.verify(token, process.env.SECRET_JWT, async (err, decoded) => {
+    if (err) return res.status(401).send({ message: "Invalid token!" });
 
-    const [schema, token] = parts;
+    const user = await userRepositories.findByIdUserRepository(decoded.id);
+    if (!user || !user.id)
+      return res.status(401).send({ message: "Invalid token!" });
 
-    if (schema !== "Bearer") {
-      return res.send(401);
-    }
+    req.userId = user.id;
 
-    jwt.verify(token, process.env.SECRET_JWT, async (error, decoded) => {
-      if (error) {
-        return res.status(401).send({ message: "Invalid token" });
-      }
+    return next();
+  });
+}
 
-      const user = await userService.findByIdUserService(decoded.id);
-
-      if (!user || !user.id) {
-        return res.status(401).send({ message: "User not found" });
-      }
-
-      req.userId = user.id;
-
-      return next();
-    });
-  } catch (err) {
-    res.status(500).send(err.message);
-  }
-};
+export default authMiddleware;
